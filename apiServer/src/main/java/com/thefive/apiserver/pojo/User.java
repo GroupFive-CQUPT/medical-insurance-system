@@ -9,6 +9,7 @@ import lombok.Data;
 @TableName("user")
 public class User {
 @TableId(type= IdType.AUTO)
+
     private Integer id;//用户id列
     private String username;
     private String password;
