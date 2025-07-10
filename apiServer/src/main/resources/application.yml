@@ -1,7 +1,7 @@
 server:
   port: 8090
   servlet:
-    context-path: /apiserver
+    context-path: /medical
 
 spring:
   #数据源配置
