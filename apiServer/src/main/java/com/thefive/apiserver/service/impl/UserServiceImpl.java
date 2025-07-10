@@ -1,4 +1,5 @@
 package com.thefive.apiserver.service.impl;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.thefive.apiserver.mapper.UserMapper;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Override
-    public ResultVo<User> login(String username,String password)throws Exception{
+    public ResultVo<User> login(String username, String password)throws Exception{
         QueryWrapper<User> qw = new QueryWrapper<>();
         qw.eq("username",username);
         qw.eq("password",password);

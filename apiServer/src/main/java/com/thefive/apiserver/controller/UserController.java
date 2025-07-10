@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 @RestController
 @RequestMapping("/user")
 @Api(tags = "用户管理")
@@ -22,7 +21,7 @@ public class UserController {
           //用户登录
     @PostMapping("/login")
     @ApiOperation("用户登录")
-    public ResultVo<User> login(@RequestParam String username,@RequestParam String password)throws Exception{
+    public ResultVo<User> login(@RequestParam String username, @RequestParam String password)throws Exception{
         return userService.login(username,password);
     }
     //修改密码
