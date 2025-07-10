@@ -11,7 +11,7 @@
       <el-form
           class="login-form"
           :model="loginForm"
-          ref="loginForm"
+          ref="loginFormRef"
           :rules="loginRules">
 
         <!-- 用户名输入 -->
@@ -72,8 +72,8 @@
 </template>
 
 <script>
-// import {login} from '@/api/userApi.js';
-// import {setSessionStorage} from '@/utils/common.js'
+import { ElMessage } from 'element-plus'
+
 export default {
   name: 'LoginForm',
   data() {
@@ -98,35 +98,70 @@ export default {
   },
   methods: {
     handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
+      this.$refs.loginFormRef.validate((valid) => {
         if (valid) {
           this.loading = true;
-          // 模拟登录请求
-          setTimeout(() => {
+          // 模拟登录API调用
+          this.loginAPI(this.loginForm).then(response => {
             this.loading = false;
-            this.$message.success('登录成功！');
-            console.log('登录表单数据:', this.loginForm);
-          }, 1000);
+            if (response.success) {
+              localStorage.setItem('userToken', response.token);
+              localStorage.setItem('userInfo', JSON.stringify(response.userInfo));
+              ElMessage.success('登录成功！');
+              // this.$router.push('/dashboard');
+            } else {
+              ElMessage.error(response.message || '登录失败');
+            }
+          }).catch(error => {
+            this.loading = false;
+            ElMessage.error('网络错误，请重试');
+            console.error('登录错误:', error);
+          });
         } else {
-          this.$message.error('请检查输入信息');
+          ElMessage.error('请检查输入信息');
           return false;
         }
       });
     },
+    async loginAPI(loginData) {
+      // 模拟API调用
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          // 模拟登录验证
+          if (loginData.username === 'admin' && loginData.password === '123456') {
+            resolve({
+              success: true,
+              token: 'mock-token-' + Date.now(),
+              userInfo: {
+                username: loginData.username,
+                name: '管理员',
+                role: 'admin'
+              }
+            });
+          } else {
+            resolve({
+              success: false,
+              message: '用户名或密码错误'
+            });
+          }
+        }, 1000);
+      });
+    },
     handleRegister() {
-      this.$message.info('跳转到注册页面');
+      this.$router.push('/register');
     },
     handleForgotPassword() {
-      this.$message.info('跳转到忘记密码页面');
+      this.$router.push('/forgot-password');
     },
     handleAgreement() {
-      this.$message.info('查看使用条款');
+      this.$router.push('/agreement');
     }
   }
 }
 </script>
 
 <style scoped>
+/* 样式保持不变 */
 .login-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -196,25 +231,6 @@ export default {
   width: 100%;
 }
 
-.login-form .el-input__inner {
-  height: 48px;
-  border-radius: 8px;
-  border: 1px solid #dcdfe6;
-  padding-left: 45px;
-  font-size: 14px;
-  transition: all 0.3s;
-}
-
-.login-form .el-input__inner:focus {
-  border-color: #409eff;
-  box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.1);
-}
-
-.login-form .el-input__prefix {
-  left: 15px;
-  color: #c0c4cc;
-}
-
 .login-form .el-checkbox {
   margin-bottom: 20px;
 }
@@ -263,7 +279,6 @@ export default {
   font-size: 14px;
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .login-page {
     padding-right: 20px;
