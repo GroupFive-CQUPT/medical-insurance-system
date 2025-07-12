@@ -39,16 +39,16 @@
                 width="60"
             />
             <el-table-column align="center" prop="id" label="编号" width="120" />
-            <el-table-column align="center" prop="itemName" label="诊疗项目中文名称" width="120" />
-            <el-table-column align="center" prop="projectCode" label="项目编码" width="120" />
-            <el-table-column align="center" prop="nationalCode" label="国家编码" width="180" />
-            <el-table-column align="center" prop="itemDescription" label="项目说明" width="120" />
+            <el-table-column align="center" prop="serviceName" label="医疗服务中文名称" width="120" />
+            <el-table-column align="center" prop="serviceCode" label="项目编码" width="120" />
+            <el-table-column align="center" prop="serviceNational" label="国家编码" width="180" />
+            <el-table-column align="center" prop="serviceDescription" label="项目说明" width="120" />
             <el-table-column align="center" prop="externalContent" label="除外说明" width="120" />
-            <el-table-column align="center" prop="unit" label="计价单位" width="120" />
-            <el-table-column align="center" prop="itemPrice" label="价格" width="120" />
+            <el-table-column align="center" prop="serviceUnit" label="计价单位" width="120" />
+            <el-table-column align="center" prop="servicePrice" label="价格" width="120" />
             <el-table-column align="center" fixed="right" label="操作" width="220">
               <template #default="scope">
-                <el-button type="primary" icon="Edit" link @click="addItem(scope.row)">增加项目</el-button>
+                <el-button type="primary" icon="Edit" link @click="addItem(scope.row)">增加服务</el-button>
               </template>
             </el-table-column>
           </el-table>
