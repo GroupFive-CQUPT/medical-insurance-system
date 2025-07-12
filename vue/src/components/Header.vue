@@ -1,7 +1,7 @@
 <template>
   <el-header id="header">
     <div >
-      <img style="width:150px;height:40px;margin:20px 0 0 -12px" src="@/assets/欢迎页面图片"/>
+      <img style="width:150px;height:40px;margin:20px 0 0 -12px" src=""/><!-- 替换为logo图片路径 -->
     </div>
 
     <el-dropdown split-button type="default" >
