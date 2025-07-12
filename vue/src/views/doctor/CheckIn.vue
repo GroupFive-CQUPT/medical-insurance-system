@@ -120,8 +120,6 @@ export default {
   },
   data() {
     return {
-      // 表单引用不需要在 data 中定义，通过 ref 访问
-      // 表单数据
       admissionForm: {
         hospitalNo: '',
         name: '',

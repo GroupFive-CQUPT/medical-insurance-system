@@ -41,6 +41,11 @@
         <el-table-column prop="workStatus" label="工作状态"></el-table-column>
         <el-table-column prop="settlementType" label="结算类别"></el-table-column>
         <el-table-column prop="admissionTime" label="入院时间"></el-table-column>
+        <el-table-column align="center" fixed="right" label="操作" width="220">
+          <template #default="scope">
+            <el-button type="primary" icon="Edit" link @click="pick(scope.row)">选中</el-button>
+          </template>
+        </el-table-column>
       </el-table>
 
       <!-- 分页 -->

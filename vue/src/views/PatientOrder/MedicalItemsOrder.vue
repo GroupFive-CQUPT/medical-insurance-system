@@ -5,7 +5,7 @@
     </el-header>
     <el-container>
       <el-row :gutter="30">
-        入院诊断疾病:
+        诊疗项目医嘱:
       </el-row>
       <el-header>
         <div>
@@ -13,7 +13,7 @@
             <el-col :span="7">
               <el-input
                   placeholder="名称"
-                  v-model="queryParams.diseaseName"
+                  v-model="queryParams.itemName"
                   @clear="query"
                   clearable
                   size="large"
@@ -30,7 +30,7 @@
       <el-main>
         <div>
           <!-- 表格 -->
-          <el-table :data="diseaseList" style="width: 100% ;color:black;" stripe>
+          <el-table :data="itemList" style="width: 100% ;color:black;" stripe>
             <el-table-column
                 align="center"
                 type="index"
@@ -39,13 +39,16 @@
                 width="60"
             />
             <el-table-column align="center" prop="id" label="编号" width="120" />
-            <el-table-column align="center" prop="diseaseCode" label="疾病编号" width="120" />
-            <el-table-column align="center" prop="diseaseName" label="疾病名称" width="120" />
-            <el-table-column align="center" prop="icdCode" label="国际编码" width="180" />
-            <el-table-column align="center" prop="diseaseType" label="疾病类型" width="120" />
+            <el-table-column align="center" prop="itemName" label="诊疗项目中文名称" width="120" />
+            <el-table-column align="center" prop="projectCode" label="项目编码" width="120" />
+            <el-table-column align="center" prop="nationalCode" label="国家编码" width="180" />
+            <el-table-column align="center" prop="itemDescription" label="项目说明" width="120" />
+            <el-table-column align="center" prop="externalContent" label="除外说明" width="120" />
+            <el-table-column align="center" prop="unit" label="计价单位" width="120" />
+            <el-table-column align="center" prop="itemPrice" label="价格" width="120" />
             <el-table-column align="center" fixed="right" label="操作" width="220">
               <template #default="scope">
-                <el-button type="primary" icon="Edit" link @click="addItem(scope.row)">增加</el-button>
+                <el-button type="primary" icon="Edit" link @click="addItem(scope.row)">增加项目</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -74,7 +77,7 @@
 </template>
 
 <script>
-import { findAllDisease } from "@/api/diseaseApi.js";
+import { findAllItem } from "@/api/medicalItemsApi.js";
 export default {
   computed: {
     indexMethod() {
@@ -94,31 +97,29 @@ export default {
       },
       btnFlag: true,
       queryParams: {
-        diseaseName:"",
-        diseaseCode:"",
         status: "1", //查询默认状态1 -启用
         itemName: "",
         pageSize: "1" //默认第一页
       },
-      diseaseList: []
+      itemList: []
     };
   },
   mounted() {
-    this.getDiseaseList();
+    this.getItemList();
 
   },
   methods: {
     //点击查询
     query() {
       this.queryParams.pageSize = "1"; //回到第一页
-      this.getDiseaseList();
+      this.getItemList();
     },
     //选中页码
     handleCurrentChange(curPage) {
       this.page.currentPag = curPage;
       this.queryParams.pageSize = curPage; //参数pageSize是服务端接收页码参数名
       //重新渲染表格
-      this.getDiseaseList();
+      this.getItemList();
     },
 
     //点击添加按钮
@@ -134,17 +135,17 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    //api-保存疾病到病人病例
+    //api-保存医嘱到病人医嘱
     save(formName) {
       this.$refs[formName].validate(valid => {
 
       });
     },
 
-    //api-查询疾病项目(分页)
-    getDiseaseList() {
-      findAllDisease(this.queryParams).then(res => {
-        this.diseaseList = res.data.records;
+    //api-查询诊疗项目(分页)
+    getItemList() {
+      findAllItem(this.queryParams).then(res => {
+        this.itemList = res.data.records;
         this.page.total = res.data.total; //总记录数
         this.page.pageSize = res.data.size; //每页显示条数
         this.page.currentPag = res.data.current; //当前页码

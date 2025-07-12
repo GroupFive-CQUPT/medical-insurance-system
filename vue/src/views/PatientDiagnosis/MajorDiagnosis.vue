@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { findAllDisease } from "@/api/PatientDiagnosisApi";
+import { findAllDisease } from "@/api/diseaseApi.js";
 export default {
   computed: {
     indexMethod() {
@@ -141,7 +141,7 @@ export default {
       });
     },
 
-    //api-查询护理项目(分页)
+    //api-查询疾病项目(分页)
     getDiseaseList() {
       findAllDisease(this.queryParams).then(res => {
         this.diseaseList = res.data.records;
