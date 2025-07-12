@@ -4,14 +4,14 @@
       <!-- 标题 -->
       <div class="login-title">
         <h1>医疗保险报销中心</h1>
-        <p>为确保安全，请妥善保存您的密码并定期更换。</p>
+        <p>注册时需要进行手机号验证，后续可通过账号密码登录，<br>为确保安全，请妥善保存您的密码并定期更换。</p>
       </div>
 
       <!-- 登录表单 -->
       <el-form
           class="login-form"
           :model="loginForm"
-          ref="loginForm"
+          ref="loginFormRef"
           :rules="loginRules">
 
         <!-- 用户名输入 -->
@@ -45,6 +45,12 @@
           <el-link type="info" @click="handleForgotPassword">忘记密码？</el-link>
         </div>
 
+        <!-- 用户协议 -->
+        <el-checkbox v-model="loginForm.agreement">
+          登录、注册即表示同意
+          <el-link type="primary" @click="handleAgreement">《医疗保险报销中心使用条款》</el-link>
+        </el-checkbox>
+
         <!-- 登录按钮 -->
         <el-button
             class="login-button"
@@ -55,14 +61,18 @@
           立即登录
         </el-button>
 
+        <!-- 注册链接 -->
+        <div class="register-link">
+          还没有账号？
+          <el-link type="primary" @click="handleRegister">立即注册</el-link>
+        </div>
       </el-form>
     </div>
   </div>
 </template>
 
 <script>
-import {login} from "@/api/userApi";
-import {setSessionStorage} from "@/utils/common";
+import { ElMessage } from 'element-plus'
 
 export default {
   name: 'LoginForm',
@@ -87,37 +97,71 @@ export default {
     }
   },
   methods: {
-    handleLogin: function () {
-      this.$refs.loginForm.validate((valid) => {
+    handleLogin() {
+      this.$refs.loginFormRef.validate((valid) => {
         if (valid) {
-          login(this.loginForm).then(res => {
-            {
-              if(res.flag){
-                //将token存入storage中
-                sessionStorage.setItem('token',res.message)
-                //将当前登录用户信息存入storage中
-                setSessionStorage('user',res.data)
-
-                this.$store.commit('addMenus',res.data.menuList)
-                //路由到第一个子菜单
-                this.$router.push(res.data.menuList[0].children[0].path)
-              }else{
-                this.$message.error(res.message)
-              }
+          this.loading = true;
+          // 模拟登录API调用
+          this.loginAPI(this.loginForm).then(response => {
+            this.loading = false;
+            if (response.success) {
+              localStorage.setItem('userToken', response.token);
+              localStorage.setItem('userInfo', JSON.stringify(response.userInfo));
+              ElMessage.success('登录成功！');
+              // this.$router.push('/dashboard');
+            } else {
+              ElMessage.error(response.message || '登录失败');
             }
-          })
+          }).catch(error => {
+            this.loading = false;
+            ElMessage.error('网络错误，请重试');
+            console.error('登录错误:', error);
+          });
+        } else {
+          ElMessage.error('请检查输入信息');
+          return false;
         }
       });
     },
-
-    handleForgotPassword() {
-      //跳转处理
+    async loginAPI(loginData) {
+      // 模拟API调用
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          // 模拟登录验证
+          if (loginData.username === 'admin' && loginData.password === '123456') {
+            resolve({
+              success: true,
+              token: 'mock-token-' + Date.now(),
+              userInfo: {
+                username: loginData.username,
+                name: '管理员',
+                role: 'admin'
+              }
+            });
+          } else {
+            resolve({
+              success: false,
+              message: '用户名或密码错误'
+            });
+          }
+        }, 1000);
+      });
     },
+    handleRegister() {
+      this.$router.push('/register');
+    },
+    handleForgotPassword() {
+      this.$router.push('/forgot-password');
+    },
+    handleAgreement() {
+      this.$router.push('/agreement');
+    }
   }
 }
 </script>
 
 <style scoped>
+/* 样式保持不变 */
 .login-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -187,25 +231,6 @@ export default {
   width: 100%;
 }
 
-.login-form .el-input__inner {
-  height: 48px;
-  border-radius: 8px;
-  border: 1px solid #dcdfe6;
-  padding-left: 45px;
-  font-size: 14px;
-  transition: all 0.3s;
-}
-
-.login-form .el-input__inner:focus {
-  border-color: #409eff;
-  box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.1);
-}
-
-.login-form .el-input__prefix {
-  left: 15px;
-  color: #c0c4cc;
-}
-
 .login-form .el-checkbox {
   margin-bottom: 20px;
 }
@@ -254,7 +279,6 @@ export default {
   font-size: 14px;
 }
 
-/* 响应式设计 */
 @media (max-width: 768px) {
   .login-page {
     padding-right: 20px;

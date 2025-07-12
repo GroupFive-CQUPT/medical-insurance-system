@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.thefive.apiserver.pojo.User;
 import com.thefive.apiserver.utils.ResultVo;
 
-
 public interface UserService extends IService<User> {
     /**
      * 用户登录
