@@ -81,6 +81,9 @@ function initRouter() {
             appendRoute.children.push(item);
         });
     }
+    appendRoute.children.push({path:"/PatientDiagnosis/AdmissionDiagnosis",component:() => import('@/views/PatientDiagnosis/AdmissionDiagnosis.vue')})
+    appendRoute.children.push({path:"/PatientDiagnosis/MajorDiagnosis",component:() => import('@/views/PatientDiagnosis/MajorDiagnosis.vue')})
+    appendRoute.children.push({path:"/PatientDiagnosis/OtherDiagnosis",component:() => import('@/views/PatientDiagnosis/OtherDiagnosis.vue')})
     // 将生成的根路由及其子路由添加到路由实例中
     router.addRoute(appendRoute);
 }
